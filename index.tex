@@ -1,0 +1,313 @@
+\documentclass[10pt]{book} % 9.5;10 = book, 11 = A4
+
+\usepackage{ebgaramond}
+% \usepackage[
+%    papersize = {173mm,246mm},
+%    layoutsize = {167mm,240mm},
+%    layoutoffset = {3mm,3mm},
+%    bindingoffset = -3mm
+% ]{geometry}
+% \geometry{hscale=0.75,vscale=0.8}
+\usepackage[
+  paperwidth=176mm, % B5 width + 3mm bleed on each side
+  paperheight=246mm, % B5 height + 3mm bleed on each side
+  layoutwidth=170mm, % B5 width
+  layoutheight=240mm, % B5 height
+  layouthoffset=3mm, % Offset for bleed on the left side
+  layoutvoffset=3mm, % Offset for bleed on the top side
+  includeheadfoot, % To include header and footer in the layout calculation
+  top=25mm, % Top margin
+  bottom=20mm, % Bottom margin
+  inner=25mm, % Inner margin
+  outer=20mm, % Outer margin
+  marginparwidth=0mm, % Assuming you don't need a margin paragraph
+  headheight=15pt, % Adjust as needed
+  %showframe % This option is just for visualizing the layout; remove it in the final document
+]{geometry} 
+
+\usepackage{graphicx}
+\usepackage{tabularray}
+\usepackage{subfig}
+\usepackage[font=small]{caption}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{textcomp}
+\usepackage{array}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor,colortbl}
+\usepackage[square, numbers, comma, sort&compress, sectionbib]{natbib}
+\usepackage{chapterbib}    
+\usepackage{svg}
+\usepackage{booktabs}
+\usepackage{xpatch}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage[export]{adjustbox}
+\usepackage{sectsty}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{colortbl}
+\usepackage{tabularray}
+\usepackage[explicit]{titlesec}
+\usepackage{url}
+\usepackage{etoolbox}
+\usepackage{everypage}
+\usepackage{ifthen}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+\usepackage{layout}
+\usepackage[printwatermark]{xwatermark}
+\usepackage{tgheros}
+\usepackage{soul}
+\usepackage{wrapfig}
+\usepackage{titling}
+% \usepackage{pdfpages}
+% \newwatermark[pages=1-100,color=gray!30,angle=45,scale=3,xpos=0,ypos=0]{DRAFT}
+
+
+\newlength{\tabheight}
+\newcommand{\numtabs}{16} % Define the total number of tabs here
+\setlength{\tabheight}{\dimexpr \textheight/\numtabs\relax} % Calculate tab height
+
+% Counter to track the current tab index
+\newcounter{CurrentTab}
+\setcounter{CurrentTab}{0} % Initialize
+
+% Command to update the current tab index
+\newcommand{\SetCurrentTab}[1]{%
+  \setcounter{CurrentTab}{#1}%
+}
+
+\newcommand{\AddTab}[4]{%
+  \AddEverypageHook{%
+    \ifnumequal{\value{CurrentTab}}{#1}{%
+    \begin{tikzpicture}[remember picture,overlay]
+        % Check if the page number is odd
+        \ifthenelse{\isodd{\value{page}}}{%
+            % For odd pages, place the tab on the right
+            \node[fill=#2!70, minimum width=0.5cm, minimum height=\tabheight, rotate=0, anchor=east, align=center] 
+            at ([xshift=0cm,yshift=-\headheight-\headsep-\tabheight-#3\tabheight]current page.north east) {};
+            \node[fill=#2!70, text=white, minimum width=1.25cm, minimum height=\tabheight, rotate=0, anchor=east, align=center, font=\small\bfseries, xshift=-3mm] 
+            at ([xshift=0cm,yshift=-\headheight-\headsep-\tabheight-#3\tabheight]current page.north east) {#4};
+        }{%
+            % For even pages, place the tab on the left
+            % Note the rotation and anchor change to flip the tab
+            \node[fill=#2!70, minimum width=0.5cm, minimum height=\tabheight, rotate=0, anchor=west, align=center] 
+            at ([xshift=0cm,yshift=-\headheight-\headsep-\tabheight-#3\tabheight]current page.north west) {};
+            \node[fill=#2!70, text=white, minimum width=1.25cm, minimum height=\tabheight, rotate=0, anchor=west, align=center, font=\small\bfseries, xshift=3mm] 
+            at ([xshift=0cm,yshift=-\headheight-\headsep-\tabheight-#3\tabheight]current page.north west) {#4};
+        }%
+        \end{tikzpicture}%
+    }%
+  }%
+}
+
+
+\hypersetup{
+    colorlinks=false
+}
+
+% Remove default headrule line
+\renewcommand{\headrulewidth}{0pt} 
+\renewcommand{\footrulewidth}{0pt} 
+
+% Add new headrule with gradient
+\renewcommand{\headrule}{%
+\begin{tikzpicture}[remember picture,overlay]
+  \shade[left color=\partcolor!50, right color=\partcolor!50, middle color=white!0] (0,0) rectangle (\textwidth,-0.03); % Adjust the rectangle coordinates and dimensions as needed
+\end{tikzpicture}%
+}
+
+\renewcommand{\footrule}{%
+\begin{tikzpicture}[remember picture,overlay]
+  \shade[left color=white!0, right color=white!0, middle color=\partcolor!50] (0,0) rectangle (\textwidth,-0.03); % Adjust the rectangle coordinates and dimensions as needed
+\end{tikzpicture}%
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+%\fancyhead[LO,RE]{\textcolor{\partcolor}{\thechapter}}
+\fancyhead[LE,RO]{\textcolor{\partcolor}{\thepage}}
+%\fancyhead[C]{\textcolor{\partcolor}{\parttitle}}
+\fancyhead[LO,RE]{\textcolor{\partcolor}{\parttitle}}
+\fancyfoot[C]{\textcolor{\partcolor}{\textit{\nouppercase\leftmark}}}
+%\fancyfoot[CE,CO]{\thepage}
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+\makeatletter
+\xpatchcmd{\@endpart}{\vfil\newpage}{}{}{}
+\xpatchcmd{\@endpart}{\newpage}{}{}{}
+\makeatother
+
+\crefname{section}{§}{§§}
+\Crefname{section}{§}{§§}
+
+
+\newcommand{\Fscore}{$F_1$-score}
+\newcommand{\etal}{\textit{et al.}}
+\newcommand{\chapstract}[2]{%
+\vspace*{\fill}
+\begin{center}
+        \begin{tabular}{c} 
+            \parbox[t]{11cm}{\small\textit{#1}} \\ \arrayrulecolor{\partcolor}\hline
+            \parbox[t]{10cm}{\footnotesize #2}
+        \end{tabular}
+\end{center}
+\vspace*{\fill}}
+
+\newcommand{\setpartcolor}[1]{\def\partcolor{#1}}
+
+\newcommand{\parttitlepage}[6]{
+\setpartcolor{#1}
+\part{\textcolor{\partcolor}{#2}} 
+\vspace*{\fill}
+\begin{center}
+    {\small
+        \begin{tabular}{c} \\ \arrayrulecolor{\partcolor}\hline
+            \parbox[t]{10cm}{
+                \vspace{0.1cm}
+                #3
+                \vspace{0.5cm}
+                #4
+                \vspace{0.3cm}
+            } \\ \arrayrulecolor{\partcolor}\hline
+        \end{tabular}
+    }
+\end{center}
+\vspace{2cm}
+\begin{flushright}
+    \textit{#5}\\
+    \textbf{#6}
+\end{flushright}
+\vspace*{\fill}
+\drawColoredBar{\partcolor}
+\clearpage
+\thispagestyle{empty}
+\drawColoredBar{\partcolor}
+\vspace{5cm}
+\clearpage
+}
+\newcommand{\drawColoredBar}[1]{%
+    \begin{tikzpicture}[remember picture, overlay]
+    % Determine if the page is left (even) or right (odd)
+    \ifodd\value{page}
+      % Right (odd) page - bar on the right
+      \fill[\partcolor] (current page.north east) rectangle ++(-10mm,-\paperheight);
+    \else
+      % Left (even) page - bar on the left
+      \fill[\partcolor] (current page.north west) rectangle ++(10mm,-\paperheight);
+    \fi
+    \end{tikzpicture}%
+}
+
+\newcommand*\parttitle{}
+\let\origpart\part
+\renewcommand*{\part}[2][]{%
+\ifx\\#1\\% optional argument not present?
+  \origpart{#2}%
+  \renewcommand*\parttitle{#2}%
+\else
+  \origpart[#1]{#2}%
+  \renewcommand*\parttitle{#1}%
+\fi
+}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\algnewcommand{\algorithmicand}{\textbf{ and }}
+\algnewcommand{\algorithmicor}{\textbf{ or }}
+\algnewcommand{\OR}{\algorithmicor}
+\algnewcommand{\AND}{\algorithmicand}
+\algnewcommand{\var}{\texttt}
+
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{M}[1]{>{\raggedright\arraybackslash}m{#1}}
+
+\definecolor{Gray}{gray}{0.9}
+\definecolor{TableAccent1}{rgb}{0.90,0.62,0}
+
+\definecolor{thesis_blue}{RGB}{86, 180, 233}
+\definecolor{thesis_gold}{RGB}{230, 159, 0}
+\definecolor{thesis_green}{RGB}{0, 158, 115}
+\definecolor{thesis_pink}{RGB}{204, 121, 167}
+\definecolor{thesis_orange}{RGB}{213, 94, 0}
+
+\def\bibfont{\small}
+\chapternumberfont{\large} 
+\chaptertitlefont{\huge}
+
+\let\origdoublepage\cleardoublepage
+\newcommand{\clearemptydoublepage}{\clearpage{\pagestyle{empty}\origdoublepage}}
+\let\cleardoublepage\clearemptydoublepage
+
+\titleformat{\chapter}[hang]{}{}{0pt}{\begin{tblr}{
+    colspec={rX},
+    colsep=10pt,
+    column{1}={leftsep=0pt, font=\fontsize{60}{0}\selectfont },
+    column{2}={rightsep=0pt, font=\LARGE\bfseries},
+    }
+\SetCell[r=1]{h,r}[\textcolor{\partcolor}{\textbf{\thechapter}}] &  #1
+\end{tblr}}
+\titleformat{name=\chapter,numberless}{}{}{0pt}{\LARGE\bfseries #1}
+
+
+\title{Your title}
+\author{Your name}
+\newcommand{\subtitle}{A longer subtitle}
+
+\begin{document}
+
+% \includepdf[pages=-]{elem/chapters/front-matter/Binnenkant.pdf}
+
+\thispagestyle{empty}
+\hfill
+
+\setpartcolor{gray}
+\input{elem/chapters/front-matter/main}
+\tableofcontents
+\clearpage
+\mainmatter
+\include{elem/chapters/introduction/main}
+\addtocontents{toc}{\setcounter{tocdepth}{2}}
+\include{elem/chapters/sota/main}
+\include{elem/chapters/conclusions/main}
+
+\SetCurrentTab{4}
+\parttitlepage{thesis_pink}{Some part 1}{%
+Some part description top part;
+}{%
+
+Some part description top part;%
+}{Some epic quote}{Some epic author}
+\include{elem/chapters/part_one/main}
+
+\SetCurrentTab{8}
+
+\parttitlepage{thesis_gold}{Part 2}{%
+Some part description top part;
+}{%
+
+Some part description top part;%
+}{Some epic quote}{Some epic author}
+\include{elem/chapters/part_two/main}
+
+\SetCurrentTab{12}
+\parttitlepage{thesis_green}{Some late part 3}{%
+Some part description top part;
+}{%
+
+Some part description top part;%
+}{Some epic quote}{Some epic author}
+
+\include{elem/chapters/part_three/main}
+
+\SetCurrentTab{16}
+\part{Datasets}
+\setpartcolor{gray}
+\include{elem/chapters/datasets/main}
+\clearpage
+\SetCurrentTab{17}
+\input{elem/chapters/end-matter/main}
+\end{document}
